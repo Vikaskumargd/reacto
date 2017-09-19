@@ -1,36 +1,48 @@
 import Axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 import { ThunkAction } from 'redux-thunk';
-
 import * as constants from './constants';
 import { NotesState } from './state';
 import { NoteModel } from './types';
 
-export interface FetchNotes {
-    type: constants.FETCH_NOTES;
+export interface RequestFetchNotes {
+    type: constants.FETCH_NOTES_REQUESTED;
+}
+
+export interface FetchNotesSuccess {
+    type: constants.FETCH_NOTES_SUCCESS;
     notes: NoteModel[];
+}
+
+export interface FetchNotesError {
+    type: constants.FETCH_NOTES_ERROR;
+    errors: {};
 }
 export interface DeleteNote {
     type: constants.DELETE_NOTE;
     id: string;
 }
 
-// type ThunkAction2<R> = ThunkAction<R, NotesState, void>;
-// export type ThunkActionCreator<R> = (...args: {}[]) => ThunkAction<R, NotesState, void>;
-export type NotesAction = FetchNotes | DeleteNote;
+export type NotesAction = RequestFetchNotes | FetchNotesSuccess | FetchNotesError;
 
-export function FetchNotes(notes: NoteModel[]): FetchNotes {
+export function RequestFetchNotes(): RequestFetchNotes {
     return {
-        type: constants.FETCH_NOTES,
+        type: constants.FETCH_NOTES_REQUESTED
+    };
+}
+
+export function FetchNotesSuccess(notes: NoteModel[]): FetchNotesSuccess {
+    return {
+        type: constants.FETCH_NOTES_SUCCESS,
         notes: notes
     };
 }
 
-const getNotes: (() => Promise<NoteModel[]>) =
-    () => {
-
-        return Axios.get('http://localhost:9000/notes')
-            .then((resp: AxiosResponse) => resp.data);
+export function FetchNotesError(errors: {}): FetchNotesError {
+    return {
+        type: constants.FETCH_NOTES_ERROR,
+        errors: errors
     };
+}
 
 const deleteNotes: ((id: string) => Promise<NoteModel>) =
     (id: string) => {
@@ -43,18 +55,18 @@ const deleteNotes: ((id: string) => Promise<NoteModel>) =
             .then((resp: AxiosResponse) => resp.data);
     };
 
-export const FetchNotesAsync = (): ThunkAction<void, NotesState, void> =>
-    (dispatch) => {
-       
-        return getNotes()
-            .then(items => {
-                dispatch(FetchNotes(items));
-            })
-            .catch((error: {}) => {
-                // tslint:disable-next-line:no-console
-                console.log(error);
-            });
-    };
+// export const FetchNotesAsync = (): ThunkAction<void, NotesState, void> =>
+//     (dispatch) => {
+//         dispatch()
+//         return getNotes()
+//             .then(items => {
+//                 dispatch(RequestFetchNotes(items));
+//             })
+//             .catch((error: {}) => {
+//                 // tslint:disable-next-line:no-console
+//                 console.log(error);
+//             });
+//     };
 export function DeleteNote(id: string): DeleteNote {
     return {
         type: constants.DELETE_NOTE,

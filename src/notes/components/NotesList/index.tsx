@@ -4,6 +4,7 @@ import { NoteModel } from '../../types';
 
 export interface NoteListVarProps {
     Notes: NoteModel[];
+    Loading: boolean;
 }
 
 export interface NoteListEventProps {
@@ -24,17 +25,21 @@ class NotesList extends React.Component<Props, {}> {
 
     render(): JSX.Element {
         return (
-            <div>
-                {
-                    this.props.Notes.map((note) => (
-                        <NoteView
-                            key={note.id}
-                            Note={note}
-                            onDelete={() => { this.props.OnDeleteNote(note.id); }}
-                        />
-                    ))
-                }
-            </div>
+            !this.props.Loading ?
+                (
+                    <div>
+                        {
+                            this.props.Notes.map((note) => (
+                                <NoteView
+                                    key={note.id}
+                                    Note={note}
+                                    onDelete={() => { this.props.OnDeleteNote(note.id); }}
+                                />
+                            ))
+                        }
+                    </div>
+                ) :
+                <p>Loading...</p>
         );
 
     }
