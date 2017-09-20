@@ -17,11 +17,10 @@ const NoteView = ({ Note, onDelete }: Props): JSX.Element => {
         <div>
             <p>
                 {Note.content}
+                <button onClick={onDelete} >X</button>
             </p>
-            <time>
-                {Note.created}
-            </time>
-            <button onClick={onDelete} >X</button>
+            
+           
         </div>
     );
 };
